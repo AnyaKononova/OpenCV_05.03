@@ -1,0 +1,54 @@
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include <iostream>
+
+using namespace std;
+using namespace cv;
+
+int main() {
+
+    Mat image = imread("C:/Users/Nuta/Documents/Open CV/Практика 1/pic2.jpg");
+    if (image.empty()) {
+        cout << "Failed to load image." << endl;
+        return -1;
+    }
+
+    int width = image.cols;
+    int height = image.rows;
+
+    putText(image, "Width: " + to_string(width), Point(10, 30), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2);
+    putText(image, "Height: " + to_string(height), Point(10, 70), FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2);
+
+    line(image(Rect(0, 0, width / 2, height / 2)), Point(50, 100), Point(200, 100), Scalar(0, 0, 255), 2);
+    circle(image(Rect(width / 2, 0, width / 2, height / 2)), Point(300, 100), 50, Scalar(0, 255, 0), 2);
+    circle(image(Rect(0, height / 2, width / 2, height / 2)), Point(450, 100), 50, Scalar(255, 0, 0), FILLED);
+    rectangle(image(Rect(width / 2, height / 2, width / 2, height / 2)), Rect(50, 150, 150, 100), Scalar(255, 255, 0), 2);
+    rectangle(image(Rect(0, height / 2, width / 2, height / 2)), Rect(250, 150, 150, 100), Scalar(255, 0, 255), FILLED);
+
+    imshow("Original Image", image);
+    waitKey(0);
+
+    Mat topLeft = image(Rect(0, 0, width / 2, height / 2));
+    Mat topRight = image(Rect(width / 2, 0, width / 2, height / 2));
+    Mat bottomLeft = image(Rect(0, height / 2, width / 2, height / 2));
+    Mat bottomRight = image(Rect(width / 2, height / 2, width / 2, height / 2));
+
+    imshow("Top Left", topLeft);
+    imshow("Top Right", topRight);
+    imshow("Bottom Left", bottomLeft);
+    imshow("Bottom Right", bottomRight);
+
+    Mat mask = Mat::zeros(image.size(), CV_8U);
+    circle(mask, Point(width / 2, height / 2), 200, Scalar(255), FILLED);
+
+    Mat maskedImage;
+    image.copyTo(maskedImage, mask);
+
+    imshow("Masked Image", maskedImage);
+
+    waitKey(0);
+    destroyAllWindows();
+
+    return 0;
+}
